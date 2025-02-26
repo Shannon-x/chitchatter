@@ -33,10 +33,15 @@ const srcPathAliases = srcPaths.reduce((acc, dir) => {
 
 const config = () => {
   return defineConfig({
+    // 为 Cloudflare Pages 自定义域名设置
+    base: '/',
+    
+    // 注意：保留以下注释作为参考
     // NOTE: Uncomment this if you are hosting Chitchatter on GitHub Pages
     // without a custom domain. If you renamed the repo to something other than
     // "chitchatter", then use that instead of "chitchatter" here.
     // base: '/chitchatter/',
+    
     build: {
       // NOTE: This isn't really working. At the very least, it's still useful
       // for exposing source code to users.
