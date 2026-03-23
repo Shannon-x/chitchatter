@@ -226,7 +226,11 @@
   "fileShare": {
     "encryptingFiles": "正在加密文件副本...",
     "encryptingFile": "正在加密文件副本...",
-    "encryptionComplete": "加密完成"
+    "encryptionComplete": "加密完成",
+    "dropFilesHere": "放开以发送文件",
+    "fileTooLarge": "文件太大。最大尺寸为 {{maxSize}}MB",
+    "pasteImageSending": "正在发送粘贴的图片...",
+    "dragDropSending": "正在发送拖放的文件..."
   },
   "media": {
     "previewNotSupported": "不支持媒体预览",

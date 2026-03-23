@@ -9,6 +9,7 @@ export interface Env {
   SFU_APP_ID?: string
   SFU_APP_SECRET?: string
   ALLOWED_ORIGINS?: string
+  API_SECRET?: string
 }
 
 const TURN_CREDENTIAL_TTL = 86400
@@ -25,8 +26,6 @@ const getCorsHeaders = (request: Request, env: Env): Record<string, string> => {
   const isAllowed =
     origin === 'http://localhost:3000' ||
     origin === 'http://localhost:5173' ||
-    origin.endsWith('.pages.dev') ||
-    origin.endsWith('.workers.dev') ||
     customOrigins.includes(origin)
 
   return {
@@ -167,6 +166,42 @@ const jsonResponse = (
   })
 }
 
+const verifyApiSecret = async (
+  request: Request,
+  env: Env
+): Promise<boolean> => {
+  if (!env.API_SECRET) return true // Bypass if not configured
+
+  const apiKey = request.headers.get('X-API-Key')
+  if (!apiKey) return false
+
+  const origin = request.headers.get('Origin') || ''
+
+  // Basic HMAC verification using Web Crypto API
+  const encoder = new TextEncoder()
+  const keyMatch = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(env.API_SECRET),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+
+  const signature = await crypto.subtle.sign(
+    'HMAC',
+    keyMatch,
+    encoder.encode(origin)
+  )
+
+  // Convert signature to hex
+  const hexSignature = Array.from(new Uint8Array(signature))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
+
+  // Allow if it matches the generated signature OR if it matches the secret exactly (for simple cases)
+  return apiKey === hexSignature || apiKey === env.API_SECRET
+}
+
 // ─── Router ─────────────────────────────────────────────
 
 export default {
@@ -183,6 +218,16 @@ export default {
     // Health check
     if (url.pathname === '/' || url.pathname === '/health') {
       return jsonResponse({ status: 'ok' }, 200, request, env)
+    }
+
+    // Require API secret for all following API endpoints
+    const isApiEndpoint =
+      url.pathname.startsWith('/api/') || url.pathname.startsWith('/sfu/')
+    if (isApiEndpoint) {
+      const isAuthorized = await verifyApiSecret(request, env)
+      if (!isAuthorized) {
+        return jsonResponse({ error: 'Unauthorized' }, 401, request, env)
+      }
     }
 
     // TURN + SFU availability config

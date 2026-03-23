@@ -24,3 +24,6 @@ ALLOWED_ORIGINS = "https://chat.cn9.eu"
 # Cloudflare SFU 服务配置（通过 wrangler secret 设置）:
 #   npx wrangler secret put SFU_APP_ID
 #   npx wrangler secret put SFU_APP_SECRET
+#
+# API 认证配置（通过 wrangler secret 设置，防止未授权的服务端请求）:
+#   npx wrangler secret put API_SECRET

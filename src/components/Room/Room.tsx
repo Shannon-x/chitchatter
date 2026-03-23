@@ -198,6 +198,7 @@ const RoomCore = ({
                     onMessageSubmit={handleMessageSubmit}
                     isMessageSending={isMessageSending}
                     onMessageChange={handleMessageChange}
+                    onInlineMediaUpload={handleInlineMediaUpload}
                   />
                   {showActiveTypingStatus ? (
                     <TypingStatusBar

@@ -226,7 +226,11 @@
   "fileShare": {
     "encryptingFiles": "Encrypting a copy of the files...",
     "encryptingFile": "Encrypting a copy of the file...",
-    "encryptionComplete": "Encryption complete"
+    "encryptionComplete": "Encryption complete",
+    "dropFilesHere": "Drop files here to send",
+    "fileTooLarge": "File is too large. Maximum size is {{maxSize}}MB",
+    "pasteImageSending": "Sending pasted image...",
+    "dragDropSending": "Sending dropped files..."
   },
   "media": {
     "previewNotSupported": "Media preview not supported",
